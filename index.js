@@ -33,7 +33,7 @@ let slashCmds = [];
     })
 })();
 
-const rest = new REST({ version: '10' }).setToken("MTAyMTA2MzUxODIwNTc4ODIzMg.G3411M.T8hIXrIzrz1urJLfOtbXTdsziAnTMmRgrqxA-I");
+const rest = new REST({ version: '10' }).setToken(token.token);
 
 
 function print(msg){

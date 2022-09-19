@@ -1,13 +1,21 @@
 {
   "name": "hx1bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "bot discord HX1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aderox/HX1BOT.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aderox/HX1BOT/issues"
+  },
+  "homepage": "https://github.com/Aderox/HX1BOT#readme",
   "dependencies": {
     "discord.js": "^14.3.0"
   }

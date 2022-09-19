@@ -11,11 +11,7 @@ const fs = require("fs")
 
 async function add(interaction){
     fs.readFile("json/sport.json", (err, data)=> {
-    console.log("USER ID:")
-    console.log(interaction.user.id)
     let sport = JSON.parse(data)
-    console.log(sport)
-    interaction.reply("OK")
     sport[interaction.user.id] += 1;
     let nbOfSport = sport[interaction.user.id]
 

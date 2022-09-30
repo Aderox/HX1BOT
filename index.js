@@ -1,14 +1,16 @@
-const { Client, GatewayIntentBits, IntentsBitField, Partials, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, IntentsBitField, Partials, REST, Routes, GuildMember, Guild } = require('discord.js');
 const fs = require('fs');
 const token = require("./token.json")
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] , partials: [Partials.Message, Partials.Channel, Partials.Reaction]});
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] , partials: [Partials.Message, Partials.Channel, Partials.Reaction]});
+
+const HX1_SERVER_ID = "1014851079160209488" ;
+const HX1_BDAY_CHAN_ID = "1023884212060815360";
+
 
 
 let commands = [];
-
 let buttons = [];
-
 let slashCmds = [];
 (async ()=>{
     //Read slash cmds in ./slashcmds
@@ -28,7 +30,7 @@ let slashCmds = [];
                 buttons.push(cmd.buttons)
             }
 
-            console.log(buttons)
+            //console.log(buttons)
         }
     })
 })();
@@ -42,8 +44,42 @@ function print(msg){
 }
 
 
+const birthday = (async() => {
+    fs.readFile("data/bday.json", async(err,data)=>{
+        if(err){
+            console.error(err);
+            return;
+        }
+        let bdayData = JSON.parse(data);
+        const guild = await client.guilds.fetch(HX1_SERVER_ID);
+        const members = await guild.members.fetch();   //map of guildMember by id
+        const length = bdayData["HX1"].length; 
+        for(let i = 0; i < length; i++){
+            const mem = members.get(bdayData["HX1"][i]["id"]);
+            if(mem != undefined && !bdayData["HX1"][i]["announced"] && Math.abs(Date.now() - bdayData["HX1"][i]["date"]) < 24*3600*1000){ //funny stuff
+                client.channels.fetch(HX1_BDAY_CHAN_ID).then(chan => {
+                    //TODO funny embed
+                    chan.send({content: `Bonne anniv  <@${mem.user.id}> !`});
+                    bdayData["HX1"][i]["announced"] = true;
+                    fs.writeFile("data/bday.json", JSON.stringify(bdayData), 'utf8', ()=>{
+
+                    })
+                })
+            }
+        }
+         
+    })
+    setTimeout(() => {
+        birthday();
+    }, 1000+parseInt(10000));
+})
+
+
+
 client.on("ready", async () =>  {
     print("Bot ready !");
+
+    birthday();
 
     (async () => {
         try {
@@ -68,7 +104,7 @@ client.on('messageCreate', async (msg) => {
         msg.reply("Non pas du coup !");
     }
 
-    if(msgL.includes("ratio")){
+    if(msgL.includes(" ratio ")){
         msg.react('🥶');
     }
 

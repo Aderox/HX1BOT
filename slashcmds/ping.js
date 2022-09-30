@@ -6,7 +6,6 @@ module.exports = {
      * @param {import("discord.js").Interaction} interaction 
      */
     run : async (interaction) => {
-        console.log("Hey !");
         interaction.reply("Yo !");
     },
 

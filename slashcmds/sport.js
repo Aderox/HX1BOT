@@ -9,6 +9,10 @@ const fs = require("fs")
 
 
 
+setInterval(async() =>{
+    
+}, 10000);
+
 async function add(interaction){
     fs.readFile("json/sport.json", (err, data)=> {
     let sport = JSON.parse(data)

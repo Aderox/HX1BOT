@@ -5,7 +5,7 @@ const token = require("./token.json")
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] , partials: [Partials.Message, Partials.Channel, Partials.Reaction]});
 
 const HX1_SERVER_ID = "1014851079160209488" ;
-const HX1_BDAY_CHAN_ID = "1014859781971902525";
+const HX1_BDAY_CHAN_ID = "1023884212060815360";
 const HX1_Z51 = "1023884212060815360";
 
 
@@ -43,7 +43,8 @@ function print(msg){
     console.log(`[HX1Bot Logs ${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR')}]: ${msg}`);
 }
 
-/*
+
+function readBdayList(){
 fs.readFile("data/bday_list.txt", async(err,data) =>{
     let txt = data.toString();
     let list = txt.split('\r\n')
@@ -56,18 +57,21 @@ fs.readFile("data/bday_list.txt", async(err,data) =>{
         let s = [sub[i], sub[i+1], sub[i+2]];
         let dateT = Date.parse(s[0])
         let date = new Date(dateT)
-        if(date.getMonth() > 9){
-            date = Date.parse(s[0] + " 2022")
+        console.log(date.getMonth() + "-" + date.getDate())
+        console.log(s[1])
+        if(date.getMonth() >= 9){
+            date.setFullYear(2022, date.getMonth(), date.getDate())
         }else{
-            date = Date.parse(s[0] + " 2023")
+            date.setFullYear(2023, date.getMonth(), date.getDate())
         }
-        date+=8*3600*1000
-        let o = {"id": s[2].toString().replace(" ", ''), "date": date, "announced": false};
+        date.setHours(8);
+        let o = {"id": s[2].toString().replace(" ", ''), "date": date.getTime(), "announced": false};
         f.push(o)
     }
-    //console.log(JSON.stringify(f))
+    console.log(JSON.stringify(f))
 });
-*/
+}
+//readBdayList()
 
 const birthday = (async() => {
     fs.readFile("data/bday.json", async(err,data)=>{

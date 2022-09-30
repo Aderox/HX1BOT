@@ -1,12 +1,12 @@
-const { Client, GatewayIntentBits, IntentsBitField, Partials, REST, Routes, GuildMember, Guild } = require('discord.js');
+const { Client, GatewayIntentBits, IntentsBitField, Partials, REST, Routes, GuildMember, Guild , EmbedBuilder} = require('discord.js');
 const fs = require('fs');
 const token = require("./token.json")
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] , partials: [Partials.Message, Partials.Channel, Partials.Reaction]});
 
 const HX1_SERVER_ID = "1014851079160209488" ;
-const HX1_BDAY_CHAN_ID = "1023884212060815360";
-
+const HX1_BDAY_CHAN_ID = "1014859781971902525";
+const HX1_Z51 = "1023884212060815360";
 
 
 let commands = [];
@@ -43,6 +43,31 @@ function print(msg){
     console.log(`[HX1Bot Logs ${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR')}]: ${msg}`);
 }
 
+/*
+fs.readFile("data/bday_list.txt", async(err,data) =>{
+    let txt = data.toString();
+    let list = txt.split('\r\n')
+    let sub = list.join(":").toString().split(":")
+
+
+    let f = []
+
+    for(let i = 0; i<sub.length;i+=3){
+        let s = [sub[i], sub[i+1], sub[i+2]];
+        let dateT = Date.parse(s[0])
+        let date = new Date(dateT)
+        if(date.getMonth() > 9){
+            date = Date.parse(s[0] + " 2022")
+        }else{
+            date = Date.parse(s[0] + " 2023")
+        }
+        date+=8*3600*1000
+        let o = {"id": s[2].toString().replace(" ", ''), "date": date, "announced": false};
+        f.push(o)
+    }
+    //console.log(JSON.stringify(f))
+});
+*/
 
 const birthday = (async() => {
     fs.readFile("data/bday.json", async(err,data)=>{
@@ -55,23 +80,28 @@ const birthday = (async() => {
         const members = await guild.members.fetch();   //map of guildMember by id
         const length = bdayData["HX1"].length; 
         for(let i = 0; i < length; i++){
-            const mem = members.get(bdayData["HX1"][i]["id"]);
-            if(mem != undefined && !bdayData["HX1"][i]["announced"] && Math.abs(Date.now() - bdayData["HX1"][i]["date"]) < 24*3600*1000){ //funny stuff
-                client.channels.fetch(HX1_BDAY_CHAN_ID).then(chan => {
-                    //TODO funny embed
-                    chan.send({content: `Bonne anniv  <@${mem.user.id}> !`});
-                    bdayData["HX1"][i]["announced"] = true;
-                    fs.writeFile("data/bday.json", JSON.stringify(bdayData), 'utf8', ()=>{
 
-                    })
+            if( bdayData["HX1"][i]["id"] == 0 ){
+                continue;
+            }
+
+            const mem = members.get(bdayData["HX1"][i]["id"]);
+            if(mem != undefined && !bdayData["HX1"][i]["announced"] && bdayData["HX1"][i]["date"] <= Date.now()){ //funny stuff
+                client.channels.fetch(HX1_BDAY_CHAN_ID).then(async (chan) => {
+                    //TODO funny embed
+                    let embed = new EmbedBuilder().setColor("6294cd").setTitle("Anniversaire 🎂 !").setDescription(`Bon anniversaire  <@${mem.user.id}> ! Passe une bonne journée`)
+                    bdayData["HX1"][i]["announced"] = true;
+                    chan.send({embeds: [embed]});
+                    fs.writeFileSync("data/bday.json", JSON.stringify(bdayData), 'utf8');
                 })
             }
         }
+        setTimeout(() => {
+            birthday();
+        }, 10000);
          
     })
-    setTimeout(() => {
-        birthday();
-    }, 1000+parseInt(10000));
+
 })
 
 

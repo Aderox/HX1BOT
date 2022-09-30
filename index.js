@@ -5,7 +5,7 @@ const token = require("./token.json")
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] , partials: [Partials.Message, Partials.Channel, Partials.Reaction]});
 
 const HX1_SERVER_ID = "1014851079160209488" ;
-const HX1_BDAY_CHAN_ID = "1023884212060815360";
+const HX1_BDAY_CHAN_ID = "1014859781971902525";
 const HX1_Z51 = "1023884212060815360";
 
 
